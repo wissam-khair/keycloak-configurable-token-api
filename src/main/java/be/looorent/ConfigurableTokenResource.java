@@ -106,9 +106,9 @@ public class ConfigurableTokenResource {
             SignatureVerifierContext verifierContext = session.getProvider(SignatureProvider.class, verifier.getHeader().getAlgorithm().name()).verifier(verifier.getHeader().getKeyId());
             verifier.verifierContext(verifierContext);
             AccessToken accessToken = verifier.verify().getToken();
-            if (tokenManager.checkTokenValidForIntrospection(session, realm, accessToken, event) == null) {
-                throw new VerificationException("introspection_failed");
-            }
+
+            TokenValidationUtils.validateTokenForIntrospection(session, realm, accessToken, event);
+
             return accessToken;
         } catch (VerificationException e) {
             LOG.warn("Keycloak-ConfigurableToken: introspection of token failed", e);
